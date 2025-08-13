@@ -15,21 +15,6 @@ public class LocationModel : IEquatable<LocationModel>
         Y = y;
     }
 
-    public bool Equals(LocationModel? a, LocationModel? b)
-    {
-        if (a == null || b == null)
-            return false;
-        return a.X == b.X && a.Y == b.Y;
-    }
-
-    public int GetHashCode(LocationModel obj)
-    {
-        var hash = 7;
-        hash = 3 * hash + X;
-        hash = 3 * hash + Y;
-        return hash;
-    }
-
     public bool Equals(LocationModel? other)
     {
         if (other == null)
