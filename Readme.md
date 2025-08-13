@@ -355,21 +355,22 @@ of a given Vendor. This means that some bins are only available on one side of a
 
 Examples:
 
-VendorA Bounds:
+VendorA Bounds:  
 (0,0) (0,4) (4,0) (4,4)
-VendorA Bins:
-(0,1) (0,2) (0,3)
-(1,4) (2,4) (3,4)
-(4,1) (4,2) (4,3)
-(1,0) (2,0) (3,0)
 
-VendorB Bounds:
+VendorA Bins:  
+(0,1) (0,2) (0,3)  
+(1,4) (2,4) (3,4)  
+(4,1) (4,2) (4,3)  
+(1,0) (2,0) (3,0)  
+
+VendorB Bounds:  
 (4,0) (8,0) (4,2) (8,2)
 
-VendorB Bins:
-(4,1)
-(5,2) (6,2) (7,2)
-(8,1)
+VendorB Bins:  
+(4,1)  
+(5,2) (6,2) (7,2)  
+(8,1)  
 (5,0) (6,0) (7,0)
 
 For example image of the market grid, see [market_grid.jpg](https://github.com/devo1929/FarmersMarket/blob/master/market_grid.jpg)
