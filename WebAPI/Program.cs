@@ -1,4 +1,5 @@
 using Core.Extensions;
+using Mock;
 using WebAPI.Database;
 using WebAPI.Services;
 
@@ -20,6 +21,7 @@ builder.Services
     .AddScoped<VendorService>()
     .AddScoped<ProductService>()
     .AddScoped<OrderService>()
+    .AddScoped<RouteService>()
     .AddScoped<AuthenticateService>()
     .AddScoped<TokenService>();
 
@@ -29,5 +31,7 @@ app.UseHttpsRedirection()
     .UseAuthorization();
 
 app.MapControllers();
+
+MockDatabase.Init();
 
 app.Run();

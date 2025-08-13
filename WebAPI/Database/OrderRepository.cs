@@ -6,8 +6,8 @@ namespace WebAPI.Database;
 public class OrderRepository
 {
     public async Task<OrderEntity> CreateAsync(OrderEntity order) => 
-        MockData.AddOrder(order);
+        MockDatabase.AddOrder(order);
 
     public async Task<IEnumerable<OrderEntity>> GetAllAsync() =>
-        MockData.Orders;
+        MockDatabase.Orders;
 }

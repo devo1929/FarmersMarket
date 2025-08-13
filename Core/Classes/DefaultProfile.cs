@@ -11,6 +11,7 @@ public class DefaultProfile : Profile
         CreateMap<VendorEntity, VendorModel>();
         CreateMap<ProductEntity, ProductModel>();
         CreateMap<ProductCreateModel, ProductEntity>();
+        CreateMap<LocationEntity, LocationModel>();
         CreateMap<OrderEntity, OrderModel>();
         CreateMap<VendorOrderEntity, VendorOrderModel>();
         CreateMap<VendorOrderProductEntity, VendorOrderProductModel>();

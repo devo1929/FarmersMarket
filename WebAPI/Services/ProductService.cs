@@ -5,7 +5,7 @@ using WebAPI.Database;
 
 namespace WebAPI.Services;
 
-public class ProductService(IMapper mapper, ProductsRepository productRepository)
+public class ProductService(IMapper mapper, ProductsRepository productRepository, RouteService routeService)
 {
     public async Task<IEnumerable<ProductModel>> GetAllAsync() =>
         mapper.Map<IEnumerable<ProductModel>>(await productRepository.GetAllAsync());
@@ -35,9 +35,7 @@ public class ProductService(IMapper mapper, ProductsRepository productRepository
 
     public async Task<RouteModel> GetRouteAsync(long productId)
     {
-        return new RouteModel
-        {
-            Paths = new List<PathModel>()
-        };
+        var product = await productRepository.GetAsync(productId);
+        return await routeService.GetRouteAsync(product);
     }
 }

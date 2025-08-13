@@ -11,15 +11,15 @@ public class OrderService(IMapper mapper, OrderRepository orderRepository)
 {
     public async Task<OrderModel> CreateAsync(OrderCreateModel model)
     {
-        var productGroups = model.Products.GroupBy(p => MockData.Products.Single(product => product.Id == p.Id).VendorId);
+        var productGroups = model.Products.GroupBy(p => MockDatabase.Products.Single(product => product.Id == p.Id).VendorId);
         var orderEntity = new OrderEntity
         {
             VendorOrders = productGroups.Select(group => new VendorOrderEntity
             {
-                Vendor = MockData.Vendors.Single(vendor => vendor.Id == group.Key),
+                Vendor = MockDatabase.Vendors.Single(vendor => vendor.Id == group.Key),
                 Products = group.Select(orderProduct => new VendorOrderProductEntity
                 {
-                    Product = MockData.Products.Single(product => product.Id == orderProduct.Id),
+                    Product = MockDatabase.Products.Single(product => product.Id == orderProduct.Id),
                     Status = VendorOrderProductStatusEnum.Pending,
                     Units = orderProduct.Units
                 }).ToList()

@@ -4,8 +4,12 @@ using Core.Enums;
 
 namespace Mock;
 
-public static class MockData
+public static class MockDatabase
 {
+    public const int MaxX = 14;
+
+    public const int MaxY = 8;
+
     /***********************/
     private static int _vendorId;
     private static int _productId;
@@ -14,6 +18,15 @@ public static class MockData
     private static int _vendorLocationId;
     private static int _vendorOrderId;
     private static int _vendorOrderProductId;
+
+    public static void Init()
+    {
+        Locations = GenerateLocations();
+        Users = UserFaker.Generate(10);
+        Vendors = VendorFaker.Generate(14);
+        Products = ProductFaker.Generate(50);
+        Orders = OrderFaker.Generate(5);
+    }
 
     private static readonly Faker<VendorEntity> VendorFaker = new Faker<VendorEntity>()
         .RuleFor(v => v.Id, f => ++_vendorId)
@@ -50,20 +63,19 @@ public static class MockData
         .RuleFor(o => o.VendorOrders, GenerateVendorOrders);
 
 
-    public static readonly List<UserEntity> Users = UserFaker.Generate(10);
-    public static readonly List<VendorEntity> Vendors = VendorFaker.Generate(14);
-    public static readonly List<ProductEntity> Products = ProductFaker.Generate(50);
-    public static readonly List<OrderEntity> Orders = OrderFaker.Generate(5);
-    private static List<LocationEntity>? _locations;
-    private static List<LocationEntity> Locations => _locations ??= GenerateLocations();
+    public static List<UserEntity> Users;
+    public static List<VendorEntity> Vendors;
+    public static List<ProductEntity> Products;
+    public static List<OrderEntity> Orders;
+    private static List<LocationEntity> Locations;
 
     private static List<LocationEntity> GenerateLocations()
     {
         var locations = new List<LocationEntity>();
         var id = 0;
-        for (var x = 0; x <= 14; x++)
+        for (var x = 0; x <= MaxX; x++)
         {
-            for (var y = 0; y <= 8; y++)
+            for (var y = 0; y <= MaxY; y++)
             {
                 locations.Add(new LocationEntity
                 {
@@ -101,13 +113,9 @@ public static class MockData
 
     private static LocationEntity GenerateRandomLocationForProduct(ProductEntity product)
     {
-        var vendorLocations = product.Vendor.VendorLocations;
-        var firstLocation = vendorLocations.First().Location;
-        var lastLocation = vendorLocations.Last().Location;
+        var possibleProductLocations = product.Vendor.GetPossibleProductLocations().ToList();
         var random = new Random();
-        var x = random.Next(firstLocation.X + 1, lastLocation.X - 1);
-        var y = random.Next(firstLocation.Y + 1, lastLocation.Y - 1);
-        return Locations.Single(l => l.X == x && l.Y == y);
+        return possibleProductLocations[random.Next(0, possibleProductLocations.Count)];
     }
 
     private static List<VendorLocationEntity> GetVendorLocationsForVendor(VendorEntity v) =>
@@ -161,8 +169,8 @@ public static class MockData
     [
         GetLocationForPoint(x1, y1),
         GetLocationForPoint(x1, y2),
-        GetLocationForPoint(x2, y1),
-        GetLocationForPoint(x2, y2)
+        GetLocationForPoint(x2, y2),
+        GetLocationForPoint(x2, y1)
     ];
 
     private static LocationEntity GetLocationForPoint(int x, int y) => Locations.Single(l => l.X == x && l.Y == y);
@@ -191,6 +199,7 @@ public static class MockData
                 vendorOrderProduct.ProductId = vendorOrderProduct.Product.Id;
             }
         }
+
         Orders.Add(order);
         return order;
     }
