@@ -62,7 +62,7 @@ Vendors that are registered with the farmers’ market
 * Name - NVARCHAR NOT NULL
 * Description - TEXT null, a way for the Vendor to describe themselves on a website
 * Status - TINYINT NOT NULL
-    * Pending  - New registration with the farmers’ market
+    * Pending - New registration with the farmers’ market
     * Active - Registration approved and vendor account activated. Vendor is now listed at the farmers’ market.
     * Revoked - Registration was revoked. Vendor is no longer listed at the farmers’ market
 
@@ -151,7 +151,8 @@ These are the individual products from a specific Vendor in a VendorOrder
 
 # Authentication
 
-The system would use an authentication system that uses JWTs. All routes in the API would attempt to validate an Authorization request header containing an access token, by default. Only endpoints whitelisted for anonymous access would “skip” authentication (identified below).
+The system would use an authentication system that uses JWTs. All routes in the API would attempt to validate an Authorization request header containing an access token, by
+default. Only endpoints whitelisted for anonymous access would “skip” authentication (identified below).
 
 Token Claims
 
@@ -161,20 +162,25 @@ Token Claims
 * exp - expiration
 * roles - array of UserRoles (system)
     * This is meant to supplement the front end in knowing what pages of a “portal” the user can see in market system management
-    * These are NOT validated by the back end on any requests. That validation is done by recalculating the UserRoles on the token’s sub claim (User.Id) at request time on necessary requests.
+    * These are NOT validated by the back end on any requests. That validation is done by recalculating the UserRoles on the token’s sub claim (User.Id) at request time on
+      necessary requests.
 * vndroles - array of VendorUserRoles (vendor)
     * This is meant to supplement the front end in knowing what pages of a “portal” the user can see for Vendor management.
-    * These are NOT validated by the back end on any requests. That validation is done by recalculating the VendorUserRoles on the token’s sub claim (User.Id) at request time on necessary requests.
+    * These are NOT validated by the back end on any requests. That validation is done by recalculating the VendorUserRoles on the token’s sub claim (User.Id) at request time on
+      necessary requests.
 * profile - object of any necessary “display” properties of a given user for a better front end experience (first name, last name, email, etc…)
 
-The “vnd” claim leaves the door open for a given User to have access to multiple Vendors with the same User account. If this is the case at the time of login, the user would need to select a Vendor.. After login, the site/application would provide the ability to switch to another Vendor accessible to the current User.  
+The “vnd” claim leaves the door open for a given User to have access to multiple Vendors with the same User account. If this is the case at the time of login, the user would need
+to select a Vendor.. After login, the site/application would provide the ability to switch to another Vendor accessible to the current User.  
 This “vnd” claim also creates “context” for various end points in the API.
 
 ---
 
 # API
 
-Below is a REST design that should meet the requirements for this assignment. However, I believe GraphQL would also be a good use case for this API. Below the specified routes are model definitions that are sometimes more specific for a given end point to ensure that only relevant fields are being returned to the front end. GraphQL would allow the back end to maintain fewer model definitions and end points and allow the front end to be smarter in requesting only the data it needs at any given point.
+Below is a REST design that should meet the requirements for this assignment. However, I believe GraphQL would also be a good use case for this API. Below the specified routes are
+model definitions that are sometimes more specific for a given end point to ensure that only relevant fields are being returned to the front end. GraphQL would allow the back end
+to maintain fewer model definitions and end points and allow the front end to be smarter in requesting only the data it needs at any given point.
 
 * Authentication -
     * `POST /authenticate` (LoginModel)
@@ -260,7 +266,7 @@ OrderModel
 
 OrderCreateModel
 
-* Products  - OrderCreateProductModel[]
+* Products - OrderCreateProductModel[]
 
 OrderCreateProductModel
 
@@ -322,7 +328,8 @@ Using what I am most familiar with. Azure services allow a user to scale up and 
             * Cheapest option
             * Estimated cost: $13/month
         * Standard
-            * Provides the ability for slots. Slots allow deployments to occur nearly seamlessly in a given environment by deploying to a staging slot then swapping it into a “live” slot when warmed up/ready.
+            * Provides the ability for slots. Slots allow deployments to occur nearly seamlessly in a given environment by deploying to a staging slot then swapping it into a
+              “live” slot when warmed up/ready.
             * Estimated cost: $70/month
         * Premium
             * Also provides slots, allowing for production deploys to occur with little to no downtime for customers
@@ -341,26 +348,28 @@ These are the frameworks/libraries that were used in the assignment.
 * Route/Path Calculation: [Dijkstra.NET](https://www.nuget.org/packages/Dijkstra.NET)
 * If using GraphQL: [HotChocolate v15](https://chillicream.com/docs/hotchocolate/v15)
 
-## 
-
 ## Market Diagram
 
-This outlines an example of how the market could be laid out. Each letter in the grid is a Vendor. Each RED marking is a bin to access Products. Bins cannot be placed at the corner of a given Vendor. This means that some bins are only available on one side of a given “path.” Paths are marked as white lines.![][image1]  
-Examples:  
-VendorA Bounds:  
-(0,0) (0,4) (4,0) (4,4)  
-VendorA Bins:  
-(1,0) (2,0) (3,0)  
-(0,1) (4,1)  
-(0,2) (4,2)  
-(0,3) (4,3)  
-(1,4) (2,4) (3,4)
+This outlines an example of how the market could be laid out. Each letter in the grid is a Vendor. Each RED marking is a bin to access Products. Bins cannot be placed at the corner
+of a given Vendor. This means that some bins are only available on one side of a given “path.” Paths are marked as white lines.
 
-VendorB Bounds:  
-(4,0) (8,0) (4,2) (8,2)  
-VendorB Bins:  
-(5,0) (6,0) (7,0)  
-(4,1) (8,1)  
+Examples:
+
+VendorA Bounds:
+(0,0) (0,4) (4,0) (4,4)
+VendorA Bins:
+(0,1) (0,2) (0,3)
+(1,4) (2,4) (3,4)
+(4,1) (4,2) (4,3)
+(1,0) (2,0) (3,0)
+
+VendorB Bounds:
+(4,0) (8,0) (4,2) (8,2)
+
+VendorB Bins:
+(4,1)
 (5,2) (6,2) (7,2)
+(8,1)
+(5,0) (6,0) (7,0)
 
 For example image of the market grid, see [market_grid.jpg](https://github.com/devo1929/FarmersMarket/blob/master/market_grid.jpg)
