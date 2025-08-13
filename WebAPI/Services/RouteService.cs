@@ -33,6 +33,11 @@ public class RouteService(IMapper mapper, VendorRepository vendorRepository)
         };
     }
 
+    /// <summary>
+    /// This builds the "graph" that is the farmers' market grid. With all grid points created, it then "connects" all points
+    /// around each vendor space in the grid. These connections are paths that can be traveled in the market.. 
+    /// </summary>
+    /// <returns></returns>
     private async Task<RouteGraph> BuildGraphAsync()
     {
         var vendors = await vendorRepository.GetAllAsync();
@@ -44,31 +49,21 @@ public class RouteService(IMapper mapper, VendorRepository vendorRepository)
 
         foreach (var vendor in vendors)
         {
-            var locations = vendor.VendorLocations.Select(vl => vl.Location).ToList();
+            var locations = vendor.GetAllLocations().ToList();
             for (var i = 0; i < locations.Count; i++)
             {
                 var loc1 = locations[i];
                 var loc2 = i == locations.Count - 1 ? locations[0] : locations[i + 1];
-                if (loc1.X == loc2.X)
-                {
-                    var minY = Math.Min(loc1.Y, loc2.Y);
-                    var maxY = Math.Max(loc1.Y, loc2.Y);
-                    for (var y = minY; y < maxY; y++)
-                        graph.Connect(new LocationModel(loc1.X, y), new LocationModel(loc1.X, y + 1));
-                }
-                else if (loc1.Y == loc2.Y)
-                {
-                    var minX = Math.Min(loc1.X, loc2.X);
-                    var maxX = Math.Max(loc1.X, loc2.X);
-                    for (var x = minX; x < maxX; x++)
-                        graph.Connect(new LocationModel(x, loc1.Y), new LocationModel(x + 1, loc1.Y));
-                }
+                graph.Connect(new LocationModel(loc1.X, loc1.Y), new LocationModel(loc2.X, loc2.Y));
             }
         }
 
         return graph;
     }
 
+    /// <summary>
+    /// This is a simple graph to help extend the Dijkstra algorithm library for our needs.
+    /// </summary>
     private class RouteGraph : Graph<LocationModel, string>
     {
         private Dictionary<LocationModel, uint> Nodes { get; } = new(new LocationEqualityComparer());
@@ -91,7 +86,15 @@ public class RouteService(IMapper mapper, VendorRepository vendorRepository)
         public ShortestPathResult GetResult(LocationModel a, LocationModel b) =>
             this.Dijkstra(Nodes[a], Nodes[b]);
 
-        public int CalculateCost(LocationModel start, LocationModel end) => (int)Math.Sqrt(Math.Pow(start.X - end.X, 2) + Math.Pow(start.Y - end.Y, 2));
+        /// <summary>
+        /// This calculates the "cost" of a path by using the pythagorean theorem. In the current example, we're using a simple grid of cells of size 1.
+        /// However, this would allow us to calculate the cost of a given path if a vendor had a non-rectangular bounds within the market, thus allowing
+        /// the customer to travel diagonally.
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        private static int CalculateCost(LocationModel start, LocationModel end) => (int)Math.Sqrt(Math.Pow(start.X - end.X, 2) + Math.Pow(start.Y - end.Y, 2));
     }
 
     private class LocationEqualityComparer : IEqualityComparer<LocationModel>

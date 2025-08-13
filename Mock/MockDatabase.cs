@@ -33,7 +33,7 @@ public static class MockDatabase
         .RuleFor(v => v.Name, f => f.Company.CompanyName())
         .RuleFor(v => v.Description, f => f.Company.CatchPhrase())
         .RuleFor(v => v.Status, f => VendorStatusEnum.Active)
-        .RuleFor(v => v.VendorLocations, (_, v) => GetVendorLocationsForVendor(v));
+        .RuleFor(v => v.VendorBounds, (_, v) => GetVendorLocationsForVendor(v));
 
     private static readonly Faker<ProductEntity> ProductFaker = new Faker<ProductEntity>()
         .RuleFor(p => p.Id, f => ++_productId)

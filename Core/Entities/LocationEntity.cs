@@ -1,6 +1,6 @@
 ﻿namespace Core.Entities;
 
-public class LocationEntity
+public class LocationEntity : IEquatable<LocationEntity>
 {
     public int Id { get; set; }
     public int X { get; set; }
@@ -14,5 +14,11 @@ public class LocationEntity
     {
         X = x;
         Y = y;
+    }
+
+    public bool Equals(LocationEntity? other)
+    {
+        if (other == null) return false;
+        return other.X == X && other.Y == Y;
     }
 }
